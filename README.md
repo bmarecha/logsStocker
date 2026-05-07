@@ -1,4 +1,4 @@
-# Interview Ministère - Fullstack Application
+# LogsStock - Fullstack Application
 
 A modern fullstack web application built with:
 - **Backend**: FastAPI (Python)
