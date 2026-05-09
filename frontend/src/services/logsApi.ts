@@ -11,6 +11,8 @@ function normalizeFilters(filters: LogFilters) {
     q: filters.query.trim() || undefined,
     level: filters.level || undefined,
     service: filters.service.trim() || undefined,
+    date_from: filters.dateFrom || undefined,
+    date_to: filters.dateTo || undefined,
   }
 }
 

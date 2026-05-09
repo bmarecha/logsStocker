@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { LogFiltersPanel } from '@/components/LogFilters'
 import { LogForm } from '@/components/LogForm'
 import { LogsList } from '@/components/LogsList'
+import { LogsStatistics } from '@/components/LogsStatistics'
 import { createLog, searchLogs } from '@/services/logsApi'
 import type { LogEntry, LogFilters, LogInput, LogLevel } from '@/types/log'
 
@@ -11,6 +12,8 @@ const defaultFilters: LogFilters = {
   query: '',
   level: '',
   service: '',
+  dateFrom: '',
+  dateTo: '',
 }
 
 function App() {
@@ -22,6 +25,13 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [totalCount, setTotalCount] = useState<number>(0)
+  const [loadedCount, setLoadedCount] = useState<number>(0)
+  const [levelCounts, setLevelCounts] = useState<Record<LogLevel, number>>({
+    INFO: 0,
+    WARNING: 0,
+    ERROR: 0,
+    DEBUG: 0,
+  })
   const loadLogs = async (
     currentFilters: LogFilters,
     page = 1,
@@ -34,9 +44,13 @@ function App() {
       const response = await searchLogs(currentFilters, page, pageSize)
       setVisibleLogs(response.results)
       setTotalCount(response.total)
+      setLoadedCount(response.loaded)
+      setLevelCounts(response.level_counts)
     } catch {
       setVisibleLogs([])
       setTotalCount(0)
+      setLoadedCount(0)
+      setLevelCounts({ INFO: 0, WARNING: 0, ERROR: 0, DEBUG: 0 })
       setErrorMessage('Failed to fetch logs from the backend.')
     } finally {
       setIsLoading(false)
@@ -54,7 +68,7 @@ function App() {
     void loadLogs(filters, 1, itemsPerPage)
   }, [itemsPerPage])
 
-  const totalPages = Math.max(1, Math.ceil(totalCount / itemsPerPage))
+  const totalPages = Math.max(1, Math.ceil(loadedCount / itemsPerPage))
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -92,6 +106,12 @@ function App() {
           </div>
         )}
 
+        {loadedCount < totalCount && (
+          <div className="rounded-2xl border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+            <strong>Pagination limit:</strong> Loaded {loadedCount.toLocaleString()} out of {totalCount.toLocaleString()} logs. To access all results, please add filters to narrow the results.
+          </div>
+        )}
+
         <header className="flex flex-col gap-2 rounded-3xl border border-white/10 bg-white/5 px-6 py-5 shadow-2xl shadow-black/20 backdrop-blur">
           <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -101,7 +121,7 @@ function App() {
               </p>
             </div>
             <div className="text-sm text-slate-400">
-              {isLoading ? 'Refreshing logs...' : `${totalCount} log(s) loaded`}
+              {isLoading ? 'Refreshing logs...' : `${loadedCount} log(s) loaded`}
             </div>
           </div>
         </header>
@@ -129,7 +149,8 @@ function App() {
             />
           </div>
 
-          <div className="rounded-3xl border border-dashed border-white/10 bg-slate-900/50 p-6 shadow-xl shadow-black/10">
+          <div className="rounded-3xl border border-white/10 bg-slate-900/80 p-6 shadow-xl shadow-black/20">
+            <LogsStatistics levelCounts={levelCounts} />
           </div>
         </section>
 
@@ -198,9 +219,9 @@ function App() {
             </label>
 
             <div className="text-sm text-slate-400">
-              {totalCount === 0
+              {loadedCount === 0
                 ? 'No results'
-                : `Page ${currentPage} of ${totalPages} · ${totalCount} result(s)`}
+                : `Page ${currentPage} of ${totalPages} · ${loadedCount} result(s)`}
             </div>
           </div>
 

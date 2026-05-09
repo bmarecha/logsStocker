@@ -1,21 +1,16 @@
 import type { LogEntry, LogLevel } from '@/types/log'
+import { levelBadgeStyles } from '@/types/log'
 
 interface LogsListProps {
   logs: LogEntry[]
 }
 
-const levelStyles: Record<LogLevel, string> = {
-  INFO: 'bg-sky-400/15 text-sky-200 ring-1 ring-sky-400/30',
-  WARNING: 'bg-amber-400/15 text-amber-200 ring-1 ring-amber-400/30',
-  ERROR: 'bg-rose-400/15 text-rose-200 ring-1 ring-rose-400/30',
-  DEBUG: 'bg-violet-400/15 text-violet-200 ring-1 ring-violet-400/30',
-}
-
 function formatTimestamp(timestamp: string) {
-  return new Intl.DateTimeFormat('en-GB', {
+  const date = new Date(timestamp)
+  return new Intl.DateTimeFormat(navigator.language || 'en-US', {
     dateStyle: 'medium',
     timeStyle: 'medium',
-  }).format(new Date(timestamp))
+  }).format(date)
 }
 
 export function LogsList({ logs }: LogsListProps) {
@@ -46,7 +41,7 @@ export function LogsList({ logs }: LogsListProps) {
               <p className="text-sm leading-6 text-slate-200">{log.message}</p>
             </div>
 
-            <div className={`inline-flex w-fit rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] ${levelStyles[log.level]}`}>
+            <div className={`inline-flex w-fit rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] ${levelBadgeStyles[log.level]}`}>
               {log.level}
             </div>
           </div>

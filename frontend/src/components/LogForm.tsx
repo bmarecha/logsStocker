@@ -16,7 +16,7 @@ function toDatetimeLocalValue(date: Date) {
     date.getFullYear(),
     pad(date.getMonth() + 1),
     pad(date.getDate()),
-  ].join('-') + `T${pad(date.getHours())}:${pad(date.getMinutes())}`
+  ].join('-') + `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
 }
 
 function toIsoTimestamp(value: string) {
