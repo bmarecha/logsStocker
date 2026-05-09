@@ -1,4 +1,4 @@
-import type { LogEntry, LogLevel } from '@/types/log'
+import type { LogEntry } from '@/types/log'
 import { levelBadgeStyles } from '@/types/log'
 
 interface LogsListProps {

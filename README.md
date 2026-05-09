@@ -11,30 +11,38 @@ A modern fullstack web application built with:
 .
 ├── backend/                 # FastAPI application
 │   ├── app/
-│   │   ├── api/            # API routes
-│   │   ├── models/         # Database models
-│   │   ├── schemas/        # Pydantic schemas
-│   │   ├── config.py       # Configuration
-│   │   └── main.py         # FastAPI app entry point
+│   │   ├── main.py         # FastAPI app with endpoints (GET /logs/search, POST /logs)
+│   │   ├── config.py       # Configuration from environment variables
+│   │   └── scripts/
+│   │       └── seed.py     # One-time database seeding with sample data
 │   ├── requirements.txt     # Python dependencies
 │   ├── Dockerfile          # Backend container
-│   └── .env                # Environment variables
+│   └── entrypoint.sh       # Container startup script
 │
-├── frontend/               # React + Vite application
+├── frontend/               # React + TypeScript + Vite application
 │   ├── src/
 │   │   ├── components/     # React components
-│   │   ├── App.tsx         # Main component
-│   │   ├── main.tsx        # Entry point
-│   │   └── index.css       # Tailwind styles
+│   │   │   ├── LogForm.tsx           # Manual log creation form
+│   │   │   ├── LogFilters.tsx        # Search and filter panel
+│   │   │   ├── LogsList.tsx          # Logs list display
+│   │   │   └── LogsStatistics.tsx    # Pie chart visualization
+│   │   ├── services/
+│   │   │   └── logsApi.ts           # Axios API client
+│   │   ├── types/
+│   │   │   └── log.ts               # TypeScript types and styles
+│   │   ├── App.tsx                  # Main application component
+│   │   ├── main.tsx                 # Vite entry point
+│   │   └── index.css                # Tailwind styles
 │   ├── public/             # Static assets
 │   ├── package.json        # Node dependencies
-│   ├── tsconfig.json       # TypeScript config
-│   ├── vite.config.ts      # Vite config
-│   ├── tailwind.config.js  # Tailwind config
+│   ├── tsconfig.json       # TypeScript configuration
+│   ├── vite.config.ts      # Vite configuration
+│   ├── tailwind.config.js  # Tailwind CSS configuration
 │   ├── Dockerfile          # Frontend container
 │   └── .env                # Environment variables
 │
-├── docker-compose.yml      # Container orchestration
+├── docker-compose.yml      # Service orchestration (OpenSearch, Backend, Frontend)
+├── .env                    # Root environment variables (single source of truth)
 └── .gitignore              # Git ignore rules
 ```
 
@@ -42,8 +50,6 @@ A modern fullstack web application built with:
 
 ### Prerequisites
 - Docker & Docker Compose
-- Node.js 18+ (for local frontend development)
-- Python 3.11+ (for local backend development)
 
 ### Running with Docker Compose
 
@@ -63,9 +69,14 @@ Then visit:
 - `OPENSEARCH_HOST`: OpenSearch host (default: localhost)
 - `OPENSEARCH_PORT`: OpenSearch port (default: 9200)
 - `ENV`: Environment (development/production)
+- `BACKEND_HOST`: Backend server bind address (default: 0.0.0.0)
+- `BACKEND_PORT`: Backend server port (default: 8000)
+- `SEEDING`: Enable one-time data seeding (default: true)
+- `SEEDING_SIZE`: Number of logs to seed (default: 50)
 
 ### Frontend (.env)
 - `VITE_API_URL`: Backend API URL (default: http://localhost:8000)
+- `FRONTEND_PORT`: Frontend dev server port (default: 5173)
 
 ## API Documentation
 
@@ -78,7 +89,3 @@ Once the backend is running, visit `http://localhost:8000/docs` for interactive 
 - [Tailwind CSS Documentation](https://tailwindcss.com/)
 - [Vite Documentation](https://vitejs.dev/)
 - [OpenSearch Documentation](https://opensearch.org/docs/)
-
-## Production Deployment
-
-TODO
