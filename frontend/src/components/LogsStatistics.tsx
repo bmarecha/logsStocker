@@ -52,7 +52,7 @@ export function LogsStatistics({ levelCounts }: LogsStatisticsProps) {
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '0.5rem',
               }}
-              labelStyle={{ color: '#e2e8f0' }}
+              itemStyle={{ color: '#e2e8f0' }}
               formatter={(value, _name, entry) => [value, entry.payload.name]}
             />
           </PieChart>

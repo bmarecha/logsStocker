@@ -32,6 +32,7 @@ services:
       - OPENSEARCH_PORT=${OPENSEARCH_PORT:-9200}
       - ENV=${ENV:-development}
       - SEEDING=${SEEDING:-false}
+      - SEEDING_SIZE=${SEEDING_SIZE:-50}
       - BACKEND_HOST=${BACKEND_HOST:-0.0.0.0}
       - BACKEND_PORT=${BACKEND_PORT:-8000}
     depends_on:
